@@ -4,8 +4,12 @@ use std::str::Bytes;
 
 const KEY: &'static str = "secretkey";
 
-fn hexify(input: &str) -> Result<Bytes, String> {
-    unimplemented!();
+fn hexify(input: &str) -> String {
+    let mut result = String::new();
+    for character in input.bytes() {
+        result += &format!("{:02x}", character);
+    }
+    result
 }
 
 fn one_time_pad(cleartext: Bytes, key: Bytes) -> Vec<u8> {
@@ -26,9 +30,11 @@ fn main() {
             exit(1);
         }
     };
-    let hex = hexify(&input).unwrap();
-    let cipher = one_time_pad(hex, KEY.bytes());
+    println!("INPUT:  {}", hexify(&input));
+    let hex = hexify(&input);
+    let cipher = one_time_pad(hex.bytes(), KEY.bytes());
 
+    print!("RESULT: ");
     for x in cipher.iter() {
         print!("{:x?}", x);
     }
